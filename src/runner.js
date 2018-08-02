@@ -1,11 +1,28 @@
-const Realm = require("realm");
 const { resolve } = require("path");
 const faker = require("faker");
+const { mkdirSync, existsSync } = require("fs");
+
+// Make the "processes" path if it doesn't exist
+const PROCESSES_PATH = resolve(__dirname, "../processes");
+if (!existsSync(PROCESSES_PATH)) {
+  mkdirSync(PROCESSES_PATH);
+}
+// Make the data path if it doesn't exist
+const DATA_PATH = resolve(__dirname, "../data");
+if (!existsSync(DATA_PATH)) {
+  mkdirSync(DATA_PATH);
+}
+
+const WD_PATH = resolve(PROCESSES_PATH, process.pid.toString());
+mkdirSync(WD_PATH);
+process.chdir(WD_PATH);
+
+const Realm = require("realm");
 
 const prefix = process.argv[2];
 const debug = require("debug")(`realm-js-test/runner-${prefix}`);
 
-const REALM_PATH = resolve(__dirname, "../data/test.realm");
+const REALM_PATH = resolve(DATA_PATH, "test.realm");
 
 const SCHEMA = [{
   name: "Person",
