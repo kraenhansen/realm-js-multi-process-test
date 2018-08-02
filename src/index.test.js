@@ -38,6 +38,11 @@ describe("Realm JS running in two processes", () => {
 
     function checkPongs(who) {
       if (pongCount === 2) {
+        // Now that process A has also changed the person, lets count how many times its changed
+        // Its actually strange that this has to be 3 and not 2 ...
+        expect(processAChangeCount).to.equal(3);
+        expect(processBChangeCount).to.equal(3);
+        // All done ...
         done();
       }
     }
@@ -53,10 +58,6 @@ describe("Realm JS running in two processes", () => {
       } else if (data.status === "person-changed") {
         // Wait for process B to respond to the change
         setTimeout(() => {
-          // Now that process A has also changed the person, lets count how many times its changed
-          // Its actually strange that this has to be 3 and not 2 ...
-          expect(processAChangeCount).to.equal(3);
-          expect(processBChangeCount).to.equal(3);
           // Ensure that both processes are not blocking
           processA.send({ action: "ping" });
           processB.send({ action: "ping" });
