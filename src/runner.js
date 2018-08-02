@@ -62,6 +62,8 @@ process.on("message", (data) => {
         newAge: person.age,
       });
     });
+  } else if (action === "ping") {
+    process.send({ status: "pong" });
   } else {
     throw new Error(`Unexpected action: ${action}`);
   }

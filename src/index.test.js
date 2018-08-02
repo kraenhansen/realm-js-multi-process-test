@@ -34,6 +34,13 @@ describe("Realm JS running in two processes", () => {
   it("can open, read, write and observe changes", (done) => {
     let processAChangeCount = 0;
     let processBChangeCount = 0;
+    let pongCount = 0;
+
+    function checkPongs(who) {
+      if (pongCount === 2) {
+        done();
+      }
+    }
     // Listen for message from process A
     processA.on("message", (data) => {
       debug(`Received status from A: ${data.status}`);
@@ -50,10 +57,15 @@ describe("Realm JS running in two processes", () => {
           // Its actually strange that this has to be 3 and not 2 ...
           expect(processAChangeCount).to.equal(3);
           expect(processBChangeCount).to.equal(3);
-          done();
-        }, 10);
+          // Ensure that both processes are not blocking
+          processA.send({ action: "ping" });
+          processB.send({ action: "ping" });
+        }, 100);
       } else if (data.status === "realm-changed") {
         processAChangeCount++;
+      } else if (data.status === "pong") {
+        pongCount++;
+        checkPongs("A");
       } else {
         const err = new Error(`Unexpected status ${data.status}`);
         done(err);
@@ -70,6 +82,9 @@ describe("Realm JS running in two processes", () => {
         processA.send({ action: "change-person", uuid: data.uuid });
       } else if (data.status === "realm-changed") {
         processBChangeCount++;
+      } else if (data.status === "pong") {
+        pongCount++;
+        checkPongs("B");
       } else {
         const err = new Error(`Unexpected status ${data.status}`);
         done(err);
