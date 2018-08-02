@@ -61,7 +61,7 @@ describe("Realm JS running in two processes", () => {
           // Ensure that both processes are not blocking
           processA.send({ action: "ping" });
           processB.send({ action: "ping" });
-        }, 100);
+        }, 1000);
       } else if (data.status === "realm-changed") {
         processAChangeCount++;
       } else if (data.status === "pong") {
