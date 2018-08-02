@@ -1,0 +1,17 @@
+{
+  "name": "realm-js-multi-process-test",
+  "version": "0.1.0",
+  "description": "Tests notification updates across multiple processes opening the same local Realm file",
+  "scripts": {
+    "test": "mocha src/**/*.test.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^4.1.2",
+    "debug": "^3.1.0",
+    "faker": "^4.1.0",
+    "mocha": "^5.2.0",
+    "realm": "^2.14.0"
+  }
+}
