@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "Tests notification updates across multiple processes opening the same local Realm file",
   "scripts": {
-    "test": "mocha src/**/*.test.js --timeout 5000"
+    "test": "mocha src/**/*.test.js --timeout 10000"
   },
   "author": "",
   "license": "ISC",
