@@ -3,12 +3,12 @@ const faker = require("faker");
 const { mkdirSync, existsSync } = require("fs");
 
 // Make the "processes" path if it doesn't exist
-const PROCESSES_PATH = resolve(__dirname, "../processes");
+const PROCESSES_PATH = resolve(__dirname, "../../processes");
 if (!existsSync(PROCESSES_PATH)) {
   mkdirSync(PROCESSES_PATH);
 }
 // Make the data path if it doesn't exist
-const DATA_PATH = resolve(__dirname, "../data");
+const DATA_PATH = resolve(__dirname, "../../data");
 if (!existsSync(DATA_PATH)) {
   mkdirSync(DATA_PATH);
 }
