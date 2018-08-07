@@ -3,15 +3,19 @@
   "version": "0.1.0",
   "description": "Tests notification updates across multiple processes opening the same local Realm file",
   "scripts": {
-    "test": "mocha src/**/*.test.js --timeout 10000"
+    "test": "mocha src/**/*.test.js --timeout 10000",
+    "postinstall": "electron-builder install-app-deps"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "chai": "^4.1.2",
     "debug": "^3.1.0",
+    "electron": "^1.8.4",
+    "electron-builder": "^20.26.1",
     "faker": "^4.1.0",
     "mocha": "^5.2.0",
-    "realm": "^2.14.0"
+    "realm": "^2.14.0",
+    "spectron": "^3.8.0"
   }
 }

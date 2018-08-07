@@ -13,7 +13,7 @@ function spawnRunner(prefix) {
   return runner;
 }
 
-describe("Realm JS running in two processes", () => {
+describe("Realm JS running in two Node.js processes", () => {
   let processA;
   let processB;
 
