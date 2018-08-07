@@ -7,7 +7,9 @@ describe("Realm JS running in two Electron renderer processes", () => {
   let app;
   let server;
 
-  before(async () => {
+  before(async function() {
+    // We need a longer timeout as starting Spectron app takes forever on Windows
+    this.timeout(30000);
     // Start the application
     app = new Application({
       path: electronPath,
@@ -30,7 +32,10 @@ describe("Realm JS running in two Electron renderer processes", () => {
   })
 
 
-  it("can open, read, write and observe changes", async () => {
+  it("can open, read, write and observe changes", async function() {
+    // We need a longer timeout as starting Spectron app takes forever on Windows
+    this.timeout(30000);
+
     let processAChangeCount = 0;
     let processBChangeCount = 0;
     let pongCount = 0;
