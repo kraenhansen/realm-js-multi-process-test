@@ -44,12 +44,22 @@ app.on("ready", () => {
   const windowA = createWindow("A");
   const windowB = createWindow("B");
 
+  function ensureWindowLoaded(w, callback) {
+    if (w.webContents.isLoading()) {
+      w.webContents.once("did-finish-load", callback);
+    } else {
+      callback();
+    }
+  }
+
   ipcMain.on("message", (e, data) => {
     if (e.sender === windowA.webContents) {
       debug(`Received status from A: ${data.status}`);
       if (data.status === "realm-opened") {
         // Once process A has opened the Realm, ask process B to do the same
-        windowB.webContents.send("message", { action: "open-realm" });
+        ensureWindowLoaded(windowB, () => {
+          windowB.webContents.send("message", { action: "open-realm" });
+        });
       } else if (data.status === "person-created") {
         // Once process A has created a Person, ask process B to change it
         windowB.webContents.send("message", { action: "change-person", uuid: data.uuid });
@@ -90,7 +100,7 @@ app.on("ready", () => {
   });
 
   // Let the games begin ...
-  windowA.webContents.on('did-finish-load', () => {
+  ensureWindowLoaded(windowA, () => {
     windowA.webContents.send("message", { action: "open-realm" });
   });
 });
