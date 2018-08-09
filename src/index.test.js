@@ -24,35 +24,48 @@ describe("Realm JS opening the same RealmFile", () => {
     }
   });
 
-  it("opens and writes twice", (done) => {
-    processA = forkProcess("a");
-    processB = forkProcess("b");
+  function test(multiProcess) {
+    it("opens and writes twice", (done) => {
+      processA = forkProcess("a");
+      processB = forkProcess("b");
 
-    processA.on("message", (msg) => {
-      if (msg === "realm opened") {
-        // When process A has opened the Realm, we'll ask B to do the same
-        processB.send("open realm");
-      } else if (msg === "written something") {
-        // When process B has opened the Realm, we'll ask A to write
-        processA.send("write something else");
-      } else if (msg === "written something else") {
-        done();
-      } else {
-        throw new Error(`Unexpected message from A: ${msg}`);
-      }
+      processA.on("message", (msg) => {
+        if (msg === "realm opened" && multiProcess) {
+          // When process A has opened the Realm, we'll ask B to do the same
+          processB.send("open realm");
+        } else if (msg === "realm opened" && !multiProcess) {
+          // When process A has opened the Realm, we'll ask A to write
+          processA.send("write something");
+        } else if (msg === "written something") {
+          // When process B has opened the Realm, we'll ask A to write
+          processA.send("write something else");
+        } else if (msg === "written something else") {
+          done();
+        } else {
+          throw new Error(`Unexpected message from A: ${msg}`);
+        }
+      });
+
+      processB.on("message", (msg) => {
+        if (msg === "realm opened") {
+          // When process A has opened the Realm, we'll ask B to do the same
+          processA.send("write something");
+        } else {
+          throw new Error(`Unexpected message from A: ${msg}`);
+        }
+      });
+
+      debug("Sending 'open realm'");
+      // Ask process A to open the realm
+      processA.send("open realm");
     });
+  }
 
-    processB.on("message", (msg) => {
-      if (msg === "realm opened") {
-        // When process A has opened the Realm, we'll ask B to do the same
-        processA.send("write something");
-      } else {
-        throw new Error(`Unexpected message from A: ${msg}`);
-      }
-    });
+  describe("without another process", () => {
+    test(false);
+  });
 
-    debug("Sending 'open realm'");
-    // Ask process A to open the realm
-    processA.send("open realm");
+  describe("with another process", () => {
+    test(true);
   });
 });

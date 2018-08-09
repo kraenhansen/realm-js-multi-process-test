@@ -1,7 +1,7 @@
-const { resolve } = require("path");
+const { basename, resolve } = require("path");
 const Realm = require("realm");
 
-const debug = require("debug")(`realm-js-test/${__filename}`);
+const debug = require("debug")(`realm-js-test/${basename(__filename)}`);
 const REALM_PATH = resolve(__dirname, "../data/test.realm");
 
 debug(`Started (pid = ${process.pid})`);
