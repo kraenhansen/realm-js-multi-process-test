@@ -1,3 +1,5 @@
-data/
-processes/
 node_modules/
+# The test realm, its management and lock
+test.realm
+test.realm.lock
+test.realm.management/
