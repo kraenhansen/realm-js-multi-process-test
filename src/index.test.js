@@ -1,6 +1,11 @@
 const { fork } = require("child_process");
 const { resolve } = require("path");
 
+// If the debug environment variable isn't specified - enable it
+if (!process.env.DEBUG) {
+  process.env.DEBUG = "realm-js-test/*";
+}
+
 const debug = require("debug")(`realm-js-test/test`);
 
 function forkProcess(prefix) {
