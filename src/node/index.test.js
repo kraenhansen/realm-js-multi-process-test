@@ -48,6 +48,7 @@ describe("Realm JS running in two Node.js processes", () => {
         done();
       }
     }
+
     // Listen for message from process A
     processA.on("message", (data) => {
       debug(`Received status from A: ${data.status}`);
@@ -56,8 +57,11 @@ describe("Realm JS running in two Node.js processes", () => {
         processB.send({ action: "open-realm" });
       } else if (data.status === "person-created") {
         // Once process A has created a Person, ask process B to change it
-        processB.send({ action: "change-person", uuid: data.uuid });
-      } else if (data.status === "person-changed") {
+        processA.send({ action: "change-person", uuid: data.uuid, state: 1 });
+      } else if (data.status === "person-changed" && data.state === 1) {
+        // Once process A has changed a Person, ask process A to change it again
+        processA.send({ action: "change-person", uuid: data.uuid, state: 2 });
+      } else if (data.status === "person-changed" && data.state === 2) {
         // Wait for process B to respond to the change
         setTimeout(() => {
           // Ensure that both processes are not blocking
@@ -80,9 +84,6 @@ describe("Realm JS running in two Node.js processes", () => {
       if (data.status === "realm-opened") {
         // Once process B has opened the Realm, ask process A to create an object
         processA.send({ action: "create-person" });
-      } else if (data.status === "person-changed") {
-        // Once process B has changed the Person, ask process A to change it too
-        processA.send({ action: "change-person", uuid: data.uuid });
       } else if (data.status === "realm-changed") {
         processBChangeCount++;
       } else if (data.status === "pong") {

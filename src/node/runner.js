@@ -77,6 +77,7 @@ process.on("message", (data) => {
         status: "person-changed",
         uuid: person.uuid,
         newAge: person.age,
+        state: data.state,
       });
     });
   } else if (action === "ping") {
